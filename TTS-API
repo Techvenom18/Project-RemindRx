@@ -1,0 +1,22 @@
+# text_to_speech.py
+from google.cloud import texttospeech
+
+client = texttospeech.TextToSpeechClient()
+text = "Time to take Paracetamol"
+
+synthesis_input = texttospeech.SynthesisInput(text=text)
+voice = texttospeech.VoiceSelectionParams(
+    language_code="en-US",
+    name="en-US-Wavenet-D"
+)
+
+response = client.synthesize_speech(
+    input=synthesis_input,
+    voice=voice,
+    audio_config=texttospeech.AudioConfig(
+        audio_encoding=texttospeech.AudioEncoding.MP3
+    )
+)
+
+with open("alert.mp3", "wb") as out:
+    out.write(response.audio_content)
