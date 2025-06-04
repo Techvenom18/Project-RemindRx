@@ -1,0 +1,50 @@
+// main.dart - Medicine Reminder App
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(RemindRxApp());
+}
+
+class RemindRxApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: MedicineScheduleScreen(),
+    );
+  }
+}
+
+class MedicineScheduleScreen extends StatefulWidget {
+  @override
+  _MedicineScheduleScreenState createState() => _MedicineScheduleScreenState();
+}
+
+class _MedicineScheduleScreenState extends State<MedicineScheduleScreen> {
+  final DatabaseReference _dbRef = FirebaseDatabase.instance.reference().child('schedules');
+  
+  void _addSchedule(String medicine, TimeOfDay time) {
+    _dbRef.push().set({
+      'medicine': medicine,
+      'time': '${time.hour}:${time.minute}',
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('RemindRx')),
+      body: Column(
+        children: [
+          ElevatedButton(
+            onPressed: () => _addSchedule('Paracetamol', TimeOfDay.now()),
+            child: Text('Add Reminder'),
+          ),
+        ],
+      ),
+    );
+  }
+}
