@@ -1,0 +1,27 @@
+// ScheduleList.js
+import React, { useEffect, useState } from 'react';
+import { getDatabase, ref, onValue } from 'firebase/database';
+
+function ScheduleList() {
+  const [schedules, setSchedules] = useState([]);
+
+  useEffect(() => {
+    const db = getDatabase();
+    const schedulesRef = ref(db, 'schedules');
+    
+    onValue(schedulesRef, (snapshot) => {
+      const data = snapshot.val();
+      setSchedules(Object.values(data || {}));
+    });
+  }, []);
+
+  return (
+    <div>
+      {schedules.map((item, index) => (
+        <div key={index}>
+          {item.medicine} at {item.time}
+        </div>
+      ))}
+    </div>
+  );
+}
