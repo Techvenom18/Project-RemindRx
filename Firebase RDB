@@ -1,0 +1,9 @@
+// Firebase Rules (security)
+{
+  "rules": {
+    "schedules": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    }
+  }
+}
