@@ -1,0 +1,29 @@
+#include <Arduino.h>
+#include <DFRobotDFPlayerMini.h> // For voice alerts
+#include <Firebase_Arduino_WiFiNINA.h> // For Firebase sync
+
+DFRobotDFPlayerMini voicePlayer;
+FirebaseData firebaseData;
+
+void setup() {
+  Serial.begin(9600);
+  voicePlayer.begin(Serial1); // Connect to TTS module
+  
+  // Connect to WiFi & Firebase
+  Firebase.begin("your-firebase-url", "your-firebase-secret");
+}
+
+void loop() {
+  if (Firebase.getString(firebaseData, "/schedules/current")) {
+    String alert = firebaseData.stringData();
+    voicePlayer.playMp3Folder(1); // Play recorded alert
+    vibrateMotor(1000); // Vibrate for 1 second
+  }
+  delay(5000); // Check every 5 seconds
+}
+
+void vibrateMotor(int duration) {
+  digitalWrite(VIB_PIN, HIGH);
+  delay(duration);
+  digitalWrite(VIB_PIN, LOW);
+}
